@@ -9,6 +9,8 @@
 body {
     background: linear-gradient(to bottom, var(--color3), var(--color2));
     background-size: 100%;
+    min-height: 100vh;
+    overflow: hidden; /* Evita el scroll en todo el cuerpo de la página */
 }
 
 .container {
@@ -16,6 +18,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow: hidden; /* Evita el scroll dentro del contenedor principal */
 }
 
 .perfil {
@@ -80,24 +83,40 @@ body {
 
 #lista-tareas {
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    max-width: 1200px;
-    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    border-radius: 50px;
+    gap: 25px;
+    padding: 15px 20px;
+    max-height: 60vh; /* Ajusta la altura según tus necesidades */
+    overflow-y: auto; /* Permite el scroll vertical solo dentro de este contenedor */
+    overflow-x: hidden; /* Oculta la barra de desplazamiento horizontal */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
 }
 
-.lista {
-    min-width: 25%;
-    list-style: none;
+#lista-tareas::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+}
+
+.tasks {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    margin-left: 20px; /* Adjust this value to move the list to the right */
+    align-content: center;
+    min-width: 25%;
+    border-radius: 30px;
+    padding: 5px;
+    transition: background-color 200ms ease-in-out;
 }
 
-.items_list {
-    color: var(--color1);
+.tasks img {
+    width: 30px;
+    border-radius: 100px;
+}
+
+.items-list {
     margin: 1rem;
     font-size: 19px;
     display: flex;
@@ -105,19 +124,35 @@ body {
     align-items: center;
     padding: 0.25em 0.5em;
     border-radius: 30px;
-    background: rgb(41, 33, 33);
-    width: 80%; /* Adjust the width to control the size of the list items */
+    transition: background-color 200ms ease-in-out;
 }
 
-.items_list li {
+.items-list li {
     padding: 7px;
     font-size: 20px;
-    flex: 1;
+    flex: 1; 
     border-radius: 30px;
-    overflow-wrap: anywhere;
-    text-align: center; /* Center the text inside the list item */
+    overflow-wrap: anywhere; 
 }
 
-.lista {
-    padding: 0rem 0.5rem;
+.check-btn, .delete-btn {
+    font-size: 19px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+/* Estilos para tareas pendientes */
+.pending {
+    background: rgb(26, 27, 27); /* Un tono oscuro */
+    color: white;
+}
+
+/* Estilos para tareas completadas */
+.completed {
+   background: rgba(36, 37, 37, 0.7); /* Un tono más claro */
+    color: var(--color1);
+}
+
+.completed .todo-item del {
+    color: var(--color2);
 }

@@ -6,7 +6,6 @@ const toDoList = document.querySelector('#lista-tareas');
 // Endpoint de la API
 const apiUrl = 'https://6674179975872d0e0a950e53.mockapi.io/todoList';
 
-// Event Listeners
 if (toDoBtn) {
     toDoBtn.addEventListener('click', addToDo);
 }
@@ -15,13 +14,14 @@ if (toDoList) {
 }
 document.addEventListener("DOMContentLoaded", fetchTodos);
 
-// Funciones
+
+
 function addToDo(event) {
     event.preventDefault();
 
     const todoText = toDoInput.value.trim();
     if (todoText === '') {
-        alert("You must write something!");
+        alert("Debes ingresar una tarea!");
         return;
     }
 
@@ -43,49 +43,61 @@ function addToDo(event) {
         }
         return response.json();
     })
+
+
     .then(data => {
         addTodoToDOM(data);
         toDoInput.value = '';
     })
+
+
     .catch(error => {
         console.error('Error adding todo:', error);
     });
 }
 
+
+
 function deleteOrCheckTodo(event) {
     const item = event.target;
+    const todoItem = item.closest('.tasks');
 
     if (item.classList.contains('delete-btn')) {
-        const todoId = item.parentElement.dataset.id;
-        const status = item.parentElement.classList.contains('completed') ? 'ready' : 'On hold';
+        const todoId = todoItem.dataset.id;
+        const isCompleted = todoItem.classList.contains('completed');
 
-        if (status === 'ready') {
+        if (isCompleted) {
             fetch(`${apiUrl}/${todoId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
+
+
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 return response.json();
             })
+            
             .then(data => {
-                item.parentElement.remove();
+                todoItem.remove();
             })
+
             .catch(error => {
                 console.error('Error deleting todo:', error);
             });
+
         } else {
             alert('You can only delete completed tasks.');
         }
     }
 
     if (item.classList.contains('check-btn')) {
-        const todoId = item.parentElement.dataset.id;
-        const currentStatus = item.parentElement.classList.contains('completed') ? 'On hold' : 'ready';
+        const todoId = todoItem.dataset.id;
+        const currentStatus = todoItem.classList.contains('completed') ? 'ready' : 'On hold';
 
         fetch(`${apiUrl}/${todoId}`, {
             method: 'PUT',
@@ -94,18 +106,25 @@ function deleteOrCheckTodo(event) {
             },
             body: JSON.stringify({ status: currentStatus })
         })
+
+
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             return response.json();
         })
+
+
         .then(data => {
-            toggleTodoStatus(item.parentElement);
+            toggleTodoStatus(todoItem);
         })
+
         .catch(error => {
             console.error('Error updating todo status:', error);
         });
+
+
     }
 }
 
@@ -114,12 +133,18 @@ function toggleTodoStatus(todoElement) {
 
     if (todoElement.classList.contains('completed')) {
         todoTextElement.innerHTML = todoTextElement.innerText;
+        todoElement.classList.remove('completed');
+        todoElement.classList.add('pending');
+
     } else {
         todoTextElement.innerHTML = `<del>${todoTextElement.innerText}</del>`;
-    }
+        todoElement.classList.remove('pending');
+        todoElement.classList.add('completed');
 
-    todoElement.classList.toggle('completed');
+    }
 }
+
+
 
 function fetchTodos() {
     fetch(apiUrl)
@@ -137,35 +162,44 @@ function fetchTodos() {
     });
 }
 
+
+
+
 function addTodoToDOM(todo) {
     const todoItem = document.createElement('li');
-    todoItem.innerText = todo.task;
-    todoItem.classList.add('todo-item');
+    todoItem.classList.add('tasks');
+    todoItem.dataset.id = todo.id;
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-    deleteBtn.classList.add('delete-btn');
+    const taskText = document.createElement('span');
+    taskText.classList.add('todo-item');
 
-    const checkBtn = document.createElement('button');
-    checkBtn.innerHTML = '<i class="fas fa-check"></i>';
-    checkBtn.classList.add('check-btn');
-
-    const todoDiv = document.createElement('div');
-    todoDiv.classList.add('items_list');
-    todoDiv.dataset.id = todo.id;
-    todoDiv.appendChild(todoItem);
-    todoDiv.appendChild(deleteBtn);
-    todoDiv.appendChild(checkBtn);
+    taskText.innerText = todo.task;
 
     if (todo.status === 'On hold') {
-        todoDiv.classList.add('completed');
-        todoItem.innerHTML = `<del>${todo.task}</del>`;
+        todoItem.classList.add('completed');
+        taskText.innerHTML = `<del>${todo.task}</del>`;
+    } else {
+        todoItem.classList.add('pending');
     }
 
-    const ulElement = document.createElement('ul');
-    ulElement.classList.add('lista');
-    ulElement.appendChild(todoDiv);
+    const checkBtn = document.createElement('img');
+    checkBtn.src = './storage/img/listo.png';
 
-    toDoList.appendChild(ulElement);
+    checkBtn.alt = 'check';
+    checkBtn.classList.add('check-btn');
+
+    const deleteBtn = document.createElement('img');
+    deleteBtn.src = './storage/img/basura.png';
+
+    deleteBtn.alt = 'trash';
+    deleteBtn.classList.add('delete-btn');
+
+    todoItem.appendChild(taskText);
+
+    todoItem.appendChild(checkBtn);
+
+    todoItem.appendChild(deleteBtn);
+
+    toDoList.appendChild(todoItem);
+
 }
-
