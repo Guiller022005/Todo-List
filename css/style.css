@@ -37,6 +37,8 @@ body {
     margin-top: 50px;
     margin-bottom: 20px;
     max-width: 480px;
+    border-right: solid 3px rgba(0, 0, 0, 0.75);
+    white-space: pre;
 }
 
 #fecha {
@@ -95,6 +97,7 @@ body {
     overflow-x: hidden; /* Oculta la barra de desplazamiento horizontal */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* IE and Edge */
+    padding-bottom: 50px; 
 }
 
 #lista-tareas::-webkit-scrollbar {
@@ -107,9 +110,10 @@ body {
     align-content: center;
     min-width: 25%;
     border-radius: 30px;
-    padding: 5px;
+    padding: 15px;
     transition: background-color 200ms ease-in-out;
 }
+
 
 .tasks img {
     width: 30px;
@@ -138,7 +142,7 @@ body {
 .check-btn, .delete-btn {
     font-size: 19px;
     cursor: pointer;
-    margin: 0 5px;
+    margin-left: 20px;
 }
 
 /* Estilos para tareas pendientes */
